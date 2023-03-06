@@ -12,17 +12,22 @@ interface IAuthor {
 }
 
 interface IContent {
-    type: 'paragraph' | 'link';
+    type: 'paragraph' | 'link',
     content: string;
 }
 
-interface IPostProps {
+export interface IPost {
+    id: number;
     author: IAuthor;
     publishedAt: Date;
     content: IContent[];
 }
 
-export function Post({ author, publishedAt, content }: IPostProps) {
+interface IPostProps {
+    post: IPost;
+}
+
+export function Post({ post }: IPostProps) {
     // Formata a data para mostrar no front-end
     // const publishedDateFormatted = new Intl.DateTimeFormat('pt-BR', {
     //     day: '2-digit',
@@ -41,10 +46,10 @@ export function Post({ author, publishedAt, content }: IPostProps) {
     const [newCommentText, setNewCommentText] = useState('')
 
     // Formata a data
-    const publishedDateFormatted = format(publishedAt, "dd 'de' LLLL 'às' HH:mm'h'", {
+    const publishedDateFormatted = format(post.publishedAt, "dd 'de' LLLL 'às' HH:mm'h'", {
         locale: ptBR,
     });
-    const publishedDateRelativaToNow = formatDistanceToNow(publishedAt, {
+    const publishedDateRelativaToNow = formatDistanceToNow(post. publishedAt, {
         locale: ptBR,
         addSuffix: true,
     })
@@ -85,22 +90,22 @@ export function Post({ author, publishedAt, content }: IPostProps) {
             {/* Cabeçalho da postagem */}
             <header>
                 <div className={styles.author}>
-                    <Avatar src={author.avatarUrl} />
+                    <Avatar src={post.author.avatarUrl} />
 
                     <div className={styles.authorInfo}>
-                        <strong>{author.name}</strong>
-                        <span>{author.role}</span>
+                        <strong>{post.author.name}</strong>
+                        <span>{post.author.role}</span>
                     </div>
                 </div>
 
-                <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>
+                <time title={publishedDateFormatted} dateTime={post.publishedAt.toISOString()}>
                     {publishedDateRelativaToNow}
                 </time>
             </header>
 
             {/* Conteúdo da postagem */}
             <div className={styles.content}>
-                {content.map(item => {
+                {post.content.map(item => {
                     if (item.type === 'paragraph') {
                         return <p key={item.content}> {item.content} </p>;
                     } else if (item.type === 'link') {
